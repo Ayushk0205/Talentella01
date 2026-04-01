@@ -1,11 +1,18 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Mail, Phone, MapPin, Send, Instagram, Twitter, Linkedin } from 'lucide-react';
 
 const Contact = () => {
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "start start"]
+  });
+  const borderProgress = useTransform(scrollYProgress, [0, 1], ["60px", "0px"]);
+
   return (
-    <div style={{ position: 'relative', minHeight: '250vh', zIndex: 40, marginBottom: '-100vh' }}>
-      <section id="contact" className="section-overlap" style={{ 
+    <div id="contact" ref={containerRef} style={{ position: 'relative', minHeight: '250vh', zIndex: 40, marginBottom: '-100vh' }}>
+      <motion.section className="section-overlap" style={{ 
         position: 'sticky',
         top: 0,
         backgroundColor: '#f8f9fc',
@@ -15,7 +22,11 @@ const Contact = () => {
         justifyContent: 'center',
         alignItems: 'center',
         minHeight: '100vh',
-        color: '#0a0a0c'
+        color: '#0a0a0c',
+        borderTopLeftRadius: borderProgress,
+        borderTopRightRadius: borderProgress,
+        borderTop: '1px solid rgba(0, 0, 0, 0.05)',
+        overflow: 'hidden'
       }}>
         {/* Floating Decorative Element */}
         <motion.div
@@ -199,7 +210,7 @@ const Contact = () => {
             </motion.div>
           </div>
         </div>
-      </section>
+      </motion.section>
     </div>
   );
 };

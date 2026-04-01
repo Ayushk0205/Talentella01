@@ -99,14 +99,21 @@ const ReviewsSection = () => {
   const row2X = useTransform(scrollYProgress, [0, 1], [-2800, 0]);
   const row3X = useTransform(scrollYProgress, [0, 1], [0, -2800]);
 
+  const { scrollYProgress: borderScroll } = useScroll({
+    target: containerRef,
+    offset: ["start end", "start start"]
+  });
+  const borderRad = useTransform(borderScroll, [0, 1], ["80px", "0px"]);
+
   return (
-    <section 
+    <motion.section 
       ref={containerRef} 
       style={{ 
         backgroundColor: '#ffffff', 
         position: 'relative',
         zIndex: 50,
-        borderRadius: '80px 80px 0 0',
+        borderTopLeftRadius: borderRad,
+        borderTopRightRadius: borderRad,
         minHeight: '200vh', 
         boxShadow: '0 -60px 150px rgba(132, 0, 255, 0.08), 0 -20px 40px rgba(0,0,0,0.03)',
         backgroundImage: `
@@ -167,7 +174,7 @@ const ReviewsSection = () => {
           </motion.div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 };
 

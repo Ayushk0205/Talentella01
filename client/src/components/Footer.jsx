@@ -1,9 +1,15 @@
 import React, { useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Instagram, Twitter, Linkedin, Mail, ArrowUpRight } from 'lucide-react';
 import { gsap } from 'gsap';
 const Footer = () => {
     const buttonRef = useRef(null);
+    const containerRef = useRef(null);
+    const { scrollYProgress } = useScroll({
+        target: containerRef,
+        offset: ["start end", "start start"]
+    });
+    const borderRad = useTransform(scrollYProgress, [0, 1], ["60px", "0px"]);
 
     useEffect(() => {
         const btn = buttonRef.current;
@@ -41,7 +47,7 @@ const Footer = () => {
     }, []);
 
     return (
-        <motion.footer id="footer" style={{ 
+        <motion.footer id="footer" ref={containerRef} style={{ 
             zIndex: 50, 
             position: 'sticky',
             top: 0,
@@ -50,8 +56,8 @@ const Footer = () => {
             minHeight: '100vh',
             borderTop: '1px solid rgba(255, 255, 255, 0.05)',
             boxShadow: '0 -40px 100px rgba(0,0,0,0.5)',
-            borderTopLeftRadius: '60px',
-            borderTopRightRadius: '60px',
+            borderTopLeftRadius: borderRad,
+            borderTopRightRadius: borderRad,
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',

@@ -7,6 +7,9 @@ import socialVideo3 from '../assets/social3.mp4';
 import socialVideo4 from '../assets/social4.mp4';
 import socialVideo5 from '../assets/social5.mp4';
 import socialVideo6 from '../assets/social6.mp4';
+import socialVideo7 from '../assets/social7.mp4';
+import socialVideo8 from '../assets/social8.mp4';
+import socialVideo9 from '../assets/social9.mp4';
 
 export const servicesData = [
   {
@@ -117,22 +120,22 @@ export const servicesData = [
         id: 'sm7',
         title: 'Tech Influence', 
         description: 'B2B influencer strategy.', 
-        type: 'image',
-        content: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&q=80&w=800'
+        type: 'video',
+        content: socialVideo7
       },
       { 
         id: 'sm8',
         title: 'Brand Story Reel', 
         description: 'Narrative-driven content for impact.', 
-        type: 'image',
-        content: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&q=80&w=800'
+        type: 'video',
+        content: socialVideo8
       },
       { 
         id: 'sm9',
         title: 'Minimalist Content', 
         description: 'Clean visuals for high-end clients.', 
-        type: 'image',
-        content: 'https://images.unsplash.com/photo-1537832816519-689ad163238b?auto=format&fit=crop&q=80&w=800'
+        type: 'video',
+        content: socialVideo9
       }
     ],
     plans: [

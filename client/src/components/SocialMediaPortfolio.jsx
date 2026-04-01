@@ -38,7 +38,7 @@ const PortfolioCard = ({
     baseRotateY_motion.set(rotateY_base);
   }
 
-  const xOffset = diff * 340;
+  const xOffset = `calc(${diff} * clamp(180px, 50vw, 340px))`;
   const zOffset = isActive ? 150 : isNear ? 0 : -150;
   const scale = isActive ? 1.1 : isNear ? 0.75 : 0.55;
   const opacity = isActive ? 1 : isNear ? 0.6 : 0.2;
@@ -93,7 +93,7 @@ const PortfolioCard = ({
       }}
       style={{ 
         position: 'absolute',
-        width: '380px',
+        width: 'clamp(240px, 70vw, 380px)',
         aspectRatio: '1/1.2',
         borderRadius: '32px',
         overflow: 'hidden',
@@ -136,8 +136,8 @@ const PortfolioCard = ({
           pointerEvents: 'none'
         }}
       >
-        <h2 style={{ color: 'white', margin: 0, fontSize: '1.5rem', fontWeight: 800 }}>{item.title}</h2>
-        <p style={{ color: 'rgba(255,255,255,0.6)', margin: '0.25rem 0 0 0', fontSize: '0.9rem' }}>{item.description}</p>
+        <h2 style={{ color: 'white', margin: 0, fontSize: 'clamp(1.15rem, 5vw, 1.5rem)', fontWeight: 800 }}>{item.title}</h2>
+        <p style={{ color: 'rgba(255,255,255,0.6)', margin: '0.25rem 0 0 0', fontSize: 'clamp(0.75rem, 3vw, 0.9rem)', lineHeight: 1.3 }}>{item.description}</p>
       </motion.div>
     </motion.div>
   );

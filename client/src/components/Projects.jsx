@@ -67,7 +67,7 @@ const ProjectCard = ({ project, index, scrollProgress }) => {
     <motion.div 
       style={{ 
         position: 'absolute', 
-        top: '12vh',
+        top: `calc(12vh + ${index * 2.5}rem)`, // Staggered offset so they don't overlap totally
         left: '50%',
         x: '-50%',
         width: '90%', 
@@ -163,14 +163,20 @@ const Projects = () => {
     offset: ["start start", "end end"]
   });
 
+  const { scrollYProgress: borderScrollProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "start start"]
+  });
+  const borderProgress = useTransform(borderScrollProgress, [0, 1], ["60px", "0px"]);
+
   return (
-    <div ref={containerRef} style={{ 
+    <div id="projects" ref={containerRef} style={{ 
       position: 'relative', 
       minHeight: '500vh', 
       zIndex: 22,
       marginBottom: '-100vh' // Pulls the next section over the pinned stack
     }}>
-      <section id="projects" style={{ 
+      <motion.section style={{ 
         position: 'sticky', 
         top: 0, 
         height: '100vh', 
@@ -179,7 +185,10 @@ const Projects = () => {
         overflow: 'hidden',
         display: 'flex', 
         flexDirection: 'column',
-        alignItems: 'center'
+        alignItems: 'center',
+        borderTopLeftRadius: borderProgress,
+        borderTopRightRadius: borderProgress,
+        borderTop: '1px solid rgba(255, 255, 255, 0.05)'
       }}>
         {/* Heading Area */}
         <div 
@@ -236,7 +245,7 @@ const Projects = () => {
             <ProjectCard key={p.id} project={p} index={i} scrollProgress={scrollYProgress} />
           ))}
         </div>
-      </section>
+      </motion.section>
     </div>
   );
 };

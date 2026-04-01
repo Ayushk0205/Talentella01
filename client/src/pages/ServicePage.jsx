@@ -38,7 +38,7 @@ const PortfolioCard = ({ work, index, total, scrollProgress, exitPoint }) => {
     <motion.div 
       style={{ 
         position: 'absolute', 
-        top: '8vh', // Perfectly balanced with the heading area
+        top: `calc(12vh + ${index * 2.5}rem)`, // Staggered offset mirroring internal logic
         left: '50%',
         x: '-50%',
         width: '90%', 
@@ -132,6 +132,19 @@ const ServicePage = () => {
     offset: ["start start", "end end"]
   });
 
+  const { scrollYProgress: borderPortfolioProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "start start"]
+  });
+  const borderPortfolioRad = useTransform(borderPortfolioProgress, [0, 1], ["60px", "0px"]);
+
+  const pricingRef = useRef(null);
+  const { scrollYProgress: borderPricingProgress } = useScroll({
+    target: pricingRef,
+    offset: ["start end", "start start"]
+  });
+  const borderPricingRad = useTransform(borderPricingProgress, [0, 1], ["60px", "0px"]);
+
   if (!service) {
     return (
       <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
@@ -170,11 +183,12 @@ const ServicePage = () => {
               </div>
               
               <h1 className="hero-title-shimmer" style={{ 
-                fontSize: 'clamp(3.5rem, 8vw, 6.5rem)', 
+                fontSize: 'clamp(1.8rem, 7vw, 6.5rem)', 
                 fontWeight: 800, 
                 marginBottom: '2.5rem', 
-                lineHeight: 1,
-                textAlign: 'left'
+                lineHeight: 1.1,
+                textAlign: 'left',
+                wordWrap: 'break-word'
               }}>
                 {service.title}
               </h1>
@@ -230,7 +244,7 @@ const ServicePage = () => {
               </p>
             </div>
 
-            <div style={{ 
+            <div className="value-grid-fix" style={{ 
               display: 'grid', 
               gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', 
               gap: '1.25rem', 
@@ -270,6 +284,7 @@ const ServicePage = () => {
                     cursor: 'pointer',
                     transition: 'background-color 0.4s ease, border-color 0.4s ease'
                   }}
+                  className="value-card"
                 >
                   <motion.div 
                     variants={{
@@ -283,6 +298,7 @@ const ServicePage = () => {
                         backgroundColor: 'rgba(132, 0, 255, 0.2)'
                       }
                     }}
+                    className="value-icon"
                     style={{ 
                       width: '44px', 
                       height: '44px', 
@@ -334,12 +350,14 @@ const ServicePage = () => {
           boxShadow: '0 -20px 60px rgba(0,0,0,0.5)'
         }}>
           {/* Sticky Section - Pinned while scrolling through containerRef */}
-          <section style={{ 
+        <motion.section style={{ 
             position: 'sticky', 
             top: 0, 
             height: '100vh', 
             width: '100%',
-            overflow: 'hidden'
+            overflow: 'hidden',
+            borderTopLeftRadius: borderPortfolioRad,
+            borderTopRightRadius: borderPortfolioRad
           }}>
             {/* Heading Area */}
             <div 
@@ -355,7 +373,7 @@ const ServicePage = () => {
               <h2 
                 className="hero-title-shimmer"
                 style={{ 
-                  fontSize: 'clamp(3rem, 10vw, 5.5rem)', 
+                  fontSize: 'clamp(1.8rem, 8vw, 5.5rem)', 
                   fontWeight: 800, 
                   textTransform: 'uppercase', 
                   letterSpacing: '-0.04em',
@@ -415,7 +433,7 @@ const ServicePage = () => {
                 </>
               )}
             </div>
-          </section>
+          </motion.section>
         </div>
 
         {/* Optional Maintenance Section (Only for Web Dev) */}
@@ -424,8 +442,8 @@ const ServicePage = () => {
         )}
 
       {/* 3. Pricing Section (Overlaps Maintenance for Web Dev or Projects otherwise) */}
-      <div style={{ position: 'relative', minHeight: '250vh', zIndex: 30, marginTop: '-100vh' }}>
-        <section className="section-overlap" style={{ 
+      <div ref={pricingRef} style={{ position: 'relative', minHeight: '250vh', zIndex: 30, marginTop: '-100vh' }}>
+        <motion.section className="section-overlap pricing-section-fix" style={{ 
           position: 'sticky',
           top: 0,
           height: '100vh',
@@ -433,8 +451,8 @@ const ServicePage = () => {
           color: '#0a0a0c', 
           paddingTop: '100px', 
           paddingBottom: '80px',
-          borderTopLeftRadius: '60px',
-          borderTopRightRadius: '60px',
+          borderTopLeftRadius: borderPricingRad,
+          borderTopRightRadius: borderPricingRad,
           boxShadow: '0 -20px 80px rgba(0,0,0,0.08)',
           overflow: 'hidden'
         }}>
@@ -446,11 +464,12 @@ const ServicePage = () => {
                Pick a plan that fits your vision.
              </p>
              
-             <div className="auto-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem', width: '100%' }}>
+             <div className="auto-grid pricing-grid-fix" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem', width: '100%' }}>
                 {service.plans.map((plan, idx) => (
                   <motion.div
                     key={idx}
                     whileHover={{ scale: 1.02 }}
+                    className="pricing-card"
                     style={{ 
                       padding: '2.5rem 2rem', 
                       backgroundColor: idx === 1 ? '#0a0a0c' : 'white', 
@@ -467,7 +486,7 @@ const ServicePage = () => {
                   >
                     {idx === 1 && <span style={{ position: 'absolute', top: '1.25rem', backgroundColor: '#8400ff', color: 'white', padding: '0.35rem 1rem', borderRadius: '100px', fontSize: '0.7rem', fontWeight: 800 }}>MOST POPULAR</span>}
                     <h3 style={{ fontSize: '1.5rem', marginBottom: '0.4rem', marginTop: idx === 1 ? '1rem' : '0' }}>{plan.name}</h3>
-                    <div style={{ fontSize: '2.8rem', fontWeight: 900, margin: '0.4rem 0' }}>{plan.price}</div>
+                    <div className="pricing-value" style={{ fontSize: '2.8rem', fontWeight: 900, margin: '0.4rem 0' }}>{plan.price}</div>
                     <div style={{ width: '30px', height: '2px', backgroundColor: '#8400ff', margin: '1.25rem 0' }}></div>
                     <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 2rem 0', display: 'flex', flexDirection: 'column', gap: '0.85rem', width: '100%' }}>
                       {plan.features.map((feature, fIdx) => (
@@ -493,7 +512,7 @@ const ServicePage = () => {
                 ))}
              </div>
           </div>
-        </section>
+        </motion.section>
       </div>
 
       {/* 4. Reviews Section (Sliding up over Pricing) */}
@@ -512,10 +531,16 @@ const ServicePage = () => {
 
 const MaintenanceSection = ({ data }) => {
   const iconMap = { Shield, Database, Zap, LifeBuoy, Rocket };
+  const containerRef = useRef(null);
+  const { scrollYProgress: borderProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "start start"]
+  });
+  const borderRad = useTransform(borderProgress, [0, 1], ["60px", "0px"]);
 
   return (
-    <div style={{ position: 'relative', minHeight: '200vh', zIndex: 25, marginTop: '-100vh' }}>
-      <section className="section-overlap" style={{ 
+    <div ref={containerRef} style={{ position: 'relative', minHeight: '200vh', zIndex: 25, marginTop: '-100vh' }}>
+      <motion.section className="section-overlap maint-section-fix" style={{ 
         position: 'sticky',
         top: 0,
         height: '100vh',
@@ -523,8 +548,8 @@ const MaintenanceSection = ({ data }) => {
         color: 'white', 
         paddingTop: '180px', 
         paddingBottom: '120px',
-        borderTopLeftRadius: '60px',
-        borderTopRightRadius: '60px',
+        borderTopLeftRadius: borderRad,
+        borderTopRightRadius: borderRad,
         boxShadow: '0 -20px 80px rgba(0,0,0,0.5)',
         overflow: 'hidden'
       }}>
@@ -532,7 +557,7 @@ const MaintenanceSection = ({ data }) => {
         <div style={{ position: 'absolute', top: '-10%', left: '10%', width: '40%', height: '40%', background: 'radial-gradient(circle, rgba(132, 0, 255, 0.1) 0%, transparent 70%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
         
         <div style={{ maxWidth: '1400px', margin: '0 auto', width: '100%', padding: '0 5%', position: 'relative', zIndex: 2 }}>
-          <div style={{ textAlign: 'center', marginBottom: '5rem' }}>
+          <div className="maint-title-fix" style={{ textAlign: 'center', marginBottom: '5rem' }}>
             <motion.h2 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -550,7 +575,7 @@ const MaintenanceSection = ({ data }) => {
             </motion.p>
           </div>
 
-          <div style={{ 
+          <div className="maint-gap-fix" style={{ 
             display: 'flex', 
             flexWrap: 'wrap', 
             justifyContent: 'center', 
@@ -568,7 +593,10 @@ const MaintenanceSection = ({ data }) => {
                   viewport={{ once: true }}
                   transition={{ delay: idx * 0.1 }}
                   whileHover={{ y: -10, backgroundColor: 'rgba(255,255,255,0.05)' }}
+                  className="maint-card"
                   style={{ 
+                    display: 'flex',
+                    flexDirection: 'column',
                     padding: '1.8rem 2rem', 
                     borderRadius: '28px', 
                     backgroundColor: 'rgba(255,255,255,0.02)', 
@@ -578,17 +606,19 @@ const MaintenanceSection = ({ data }) => {
                     maxWidth: '340px'
                   }}
                 >
-                  <div style={{ width: '50px', height: '50px', borderRadius: '14px', backgroundColor: 'rgba(132, 0, 255, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8400ff', marginBottom: '1.5rem' }}>
+                  <div className="maint-icon" style={{ width: '50px', height: '50px', borderRadius: '14px', backgroundColor: 'rgba(132, 0, 255, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8400ff', marginBottom: '1.5rem', flexShrink: 0 }}>
                     <Icon size={24} />
                   </div>
-                  <h3 style={{ fontSize: '1.3rem', fontWeight: 700, marginBottom: '0.75rem' }}>{item.title}</h3>
-                  <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.95rem', lineHeight: '1.6' }}>{item.desc}</p>
+                  <div className="maint-content">
+                    <h3 style={{ fontSize: '1.3rem', fontWeight: 700, marginBottom: '0.75rem' }}>{item.title}</h3>
+                    <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.95rem', lineHeight: '1.6', margin: 0 }}>{item.desc}</p>
+                  </div>
                 </motion.div>
               );
             })}
           </div>
         </div>
-      </section>
+      </motion.section>
     </div>
   );
 };

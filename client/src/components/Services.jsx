@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Code, Share2, Palette, Settings, ArrowUpRight, Zap } from 'lucide-react';
 import { gsap } from 'gsap';
@@ -61,7 +61,7 @@ const ServiceCard = ({ s, index }) => {
           delay: (index % 3) * 0.1, 
           duration: 0.6
         }}
-        className="interactive-card"
+        className="interactive-card service-card"
         style={{ 
           backgroundColor: '#ffffff',
           padding: '2.5rem 2rem',
@@ -79,7 +79,7 @@ const ServiceCard = ({ s, index }) => {
       >
         <div className="card-spotlight" />
         
-        <div style={{ 
+        <div className="icon-wrapper" style={{ 
           width: '50px', 
           height: '50px', 
           borderRadius: '12px', 
@@ -94,12 +94,14 @@ const ServiceCard = ({ s, index }) => {
           <IconComponent size={24} />
         </div>
         
-        <h3 style={{ fontSize: '1.4rem', fontWeight: 700, position: 'relative', zIndex: 2, color: '#0a0a0c' }}>{s.title}</h3>
-        <p style={{ color: '#55555f', fontSize: '0.9rem', lineHeight: '1.6', position: 'relative', zIndex: 2, marginBottom: 'auto' }}>
-          {s.description}
-        </p>
+        <div className="service-card-content">
+          <h3 style={{ fontSize: '1.4rem', fontWeight: 700, position: 'relative', zIndex: 2, color: '#0a0a0c' }}>{s.title}</h3>
+          <p style={{ color: '#55555f', fontSize: '0.9rem', lineHeight: '1.6', position: 'relative', zIndex: 2, marginBottom: 'auto' }}>
+            {s.description}
+          </p>
+        </div>
         
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#8400ff', fontWeight: 700, fontSize: '0.85rem', position: 'relative', zIndex: 2 }}>
+        <div className="learn-more" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#8400ff', fontWeight: 700, fontSize: '0.85rem', position: 'relative', zIndex: 2 }}>
           LEARN MORE <ArrowUpRight size={16} />
         </div>
 
@@ -123,43 +125,67 @@ const ServiceCard = ({ s, index }) => {
 };
 
 const Services = () => {
-  return (
-    <motion.section id="services" className="section-overlap" style={{ zIndex: 20, backgroundColor: '#f8f9fc', padding: '12vh 5%', overflow: 'hidden', borderTopLeftRadius: '60px', borderTopRightRadius: '60px' }}>
-      <div style={{ maxWidth: '1400px', width: '100%', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-        
-        <div style={{ marginBottom: '6rem', maxWidth: '800px' }}>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            style={{ fontSize: 'clamp(3rem, 10vw, 5rem)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '-0.02em', color: '#0a0a0c' }}
-          >
-            OUR SERVICES
-          </motion.h2>
-          
-          <motion.p 
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            style={{ color: '#55555f', fontSize: '1.2rem', lineHeight: '1.6', fontWeight: 500, marginTop: '1.5rem', maxWidth: '600px', margin: '1.5rem auto 0' }}
-          >
-            Premium marketing and branding solutions to scale your digital presence.
-          </motion.p>
-        </div>
+  const containerRef = React.useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "start start"]
+  });
+  const borderProgress = useTransform(scrollYProgress, [0, 1], ["60px", "0px"]);
 
-        <div className="auto-grid" style={{ 
-          width: '100%', 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 400px))', 
-          gap: '2rem',
-          justifyContent: 'center'
-        }}>
-          {servicesData.map((s, i) => (
-            <ServiceCard key={s.id} s={s} index={i} />
-          ))}
+  return (
+    <div id="services" ref={containerRef} style={{ position: 'relative', minHeight: '200vh', zIndex: 20, marginBottom: '-100vh' }}>
+      <motion.section className="section-overlap" style={{ 
+        zIndex: 20, 
+        backgroundColor: '#f8f9fc', 
+        padding: '12vh 5%', 
+        overflow: 'hidden', 
+        borderTopLeftRadius: borderProgress, 
+        borderTopRightRadius: borderProgress,
+        position: 'sticky',
+        top: 0,
+        height: '100vh',
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}>
+        <div style={{ maxWidth: '1400px', width: '100%', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+          
+          <div className="services-header" style={{ marginBottom: '6rem', maxWidth: '800px' }}>
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              style={{ fontSize: 'clamp(3rem, 10vw, 5rem)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '-0.02em', color: '#0a0a0c' }}
+            >
+              OUR SERVICES
+            </motion.h2>
+            
+            <motion.p 
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              style={{ color: '#55555f', fontSize: '1.2rem', lineHeight: '1.6', fontWeight: 500, marginTop: '1.5rem', maxWidth: '600px', margin: '1.5rem auto 0' }}
+            >
+              Premium marketing and branding solutions to scale your digital presence.
+            </motion.p>
+          </div>
+
+          <div className="auto-grid" style={{ 
+            width: '100%', 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
+            gap: '1.5rem',
+            justifyContent: 'center'
+          }}>
+            {servicesData.map((s, i) => (
+              <ServiceCard key={s.id} s={s} index={i} />
+            ))}
+          </div>
         </div>
-      </div>
-    </motion.section>
+      </motion.section>
+    </div>
   );
 };
 
